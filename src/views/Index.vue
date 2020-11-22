@@ -1,0 +1,216 @@
+<template>
+  <div class="index">
+    <blog-header></blog-header>
+    <main class="center">
+      <ul class="tabList">
+        <li class="active">热门</li>
+        <li>最新</li>
+        <li>热榜</li>
+      </ul>
+      <ul class="articleList">
+        <li
+          v-for="item in articleList"
+          :key="item.id"
+          @click="handleToDetail(item._id)"
+        >
+          <div class="art-info">
+            <div class="tip">{{`${item.creator.name} · ${item.created_at}`}}</div>
+            <div class="title">{{ item.title }}</div>
+          </div>
+          <div
+            v-if="item.cover"
+            class="art-img"
+          >
+            <img
+              :src="item.cover"
+            >
+          </div>
+        </li>
+      </ul>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="totalCount"
+        :page-size="pageObj.pageSize"
+        @current-change="handleChange"
+        @prev-click="handleChange"
+        @next-click="handleChange"
+      >
+      </el-pagination>
+    </main>
+  </div>
+</template>
+
+<script>
+import BlogHeader from '../components/BlogHeader'
+import moment from 'moment'
+export default {
+  name: 'Index',
+  components: {
+    BlogHeader
+  },
+  data: function() {
+    return {
+      articleList: [],
+      pageObj: {
+        pageNo: 1,
+        pageSize: 5
+      },
+      totalCount: 0
+    }
+  },
+  created () {
+    this.getArticle()
+  },
+  methods: {
+    getArticle () {
+      this.axios.post("http://120.79.115.240:5000/articles", this.pageObj).then((res) => {
+        if (res.data.success) {
+          this.articleList = res.data.data.list
+          this.totalCount = res.data.data.totalCount
+          this.articleList.forEach(item => {
+            item.created_at = moment(item.created_at).format('YYYY-MM-DD')
+          })
+        } else {
+          this.$message.error('获取文章列表失败！')
+        }
+      }).catch(err => {
+        if (err) {
+          this.$message.error('服务器异常')
+        }
+      })
+    },
+    handleChange (curPage) {
+      this.pageObj.pageNo = curPage
+      this.getArticle()
+    },
+    handleToDetail (id) {
+      this.$router.push({
+        path: '/articleDetail',
+        query: {
+          id: id
+        }
+      })
+    }
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.index {
+  background-color: #F3F3F3;
+  .center {
+    width: 1311px;
+    margin: 0 auto;
+  }
+  .active {
+    color: #2B7DE1 !important;
+  }
+  header {
+    height: 87px;
+    background-color: white;
+    // overflow: hidden;
+    .header-inner {
+      float: left;
+      display: flex;
+      height: 100%;
+      width: 500px;
+      align-items: center;
+      justify-content: space-between;
+      margin-right: 300px;
+      ul {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;        
+        width: 300px;
+        li {
+          height: 89px;
+          width: 75px;
+          cursor: pointer;
+          text-align: center;
+          line-height: 89px;
+          color: #C1C1C1;
+          font-size: 20px;
+        }
+      }
+    }
+    .el-input {
+      float: left;
+      width: 200px;
+      margin-top: 25px;
+    }
+  }
+  main {
+    // height: 500px;
+    background-color: white;
+    margin-top: 20px !important;
+
+    ul.tabList {
+      padding-left: 32px;
+      overflow: hidden;
+      border-bottom: 1px solid #f6f6f6;
+      li {
+        float: left;
+        height: 62px;
+        line-height: 62px;
+        margin-right: 45px;
+        color: #C1C1C1;
+        cursor: pointer;
+        font-size: 18px;
+      }
+    }
+
+    ul.articleList {
+      box-sizing: border-box;
+      width: 1311px;
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #F6F6F6;
+        padding: 29px 54px 21px 33px;
+        text-align: left;
+        cursor: pointer;
+        .art-info {
+          height: 106px;
+          .tip {
+            font-size: 18px;
+            color: #D4D4D4;
+            max-width: 1100px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            margin-bottom: 10px;
+          }
+          .title {
+            font-size: 26px;
+            font-weight: 600;
+            max-width: 1100px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+          }
+        }
+        .art-img {
+          width: 100px;
+          height: 106px;
+          img {
+            width: 100%;
+          }
+        }
+      }
+    }
+
+    .el-pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+    }
+  }
+}
+</style>

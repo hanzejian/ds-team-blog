@@ -1,0 +1,108 @@
+<template>
+  <div class="article-detail">
+    <blog-Header></blog-Header>
+    <main class="center">
+      <div class="author-info">
+        <div class="info-left"
+        >
+          <img :src="article.creator.avatar_url" alt="">
+        </div>
+        <div class="info-right">
+          <div class="name">{{ article.creator.name }}</div>
+          <div class="other">
+            <span class="time">{{ article.created_at }}</span>
+            <span>阅读量：{{ article.hits }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="content" v-html="article.body_html"></div>
+    </main>
+  </div>
+</template>
+
+<script>
+import BlogHeader from '../components/BlogHeader'
+import moment from 'moment'
+export default {
+  name: 'ArticleDetail',
+  components: {
+    BlogHeader
+  },
+  data: function() {
+    return {
+      article: {}
+    }
+  },
+  created () {
+    this.getDetail()
+  },
+  methods: {
+    getDetail () {
+      this.axios.get("http://120.79.115.240:5000/articles/article?id=" + this.$route.query.id).then((res) => {
+        if (res.data.success) {
+          this.article = res.data.data
+          this.article.created_at = moment(this.article.created_at).format('YYYY年MM月DD日')
+        } else {
+          this.$message.error('获取文章列表失败！')
+        }
+      }).catch(err => {
+        if (err) {
+          this.$message.error('服务器异常')
+        }
+      })
+    }
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.article-detail {
+  background-color: #F3F3F3;
+
+  .center {
+    width: 1311px;
+    margin: 0 auto;
+  }
+
+  main {
+    background-color: white;
+    margin-top: 20px !important;
+
+    .author-info {
+      padding: 31px 0 0 34px;
+      overflow: hidden;
+      .info-left {
+        float: left;
+        width: 58px;
+        height: 58px;
+        margin-right: 15px;
+        cursor: pointer;
+        img {
+          width: 100%;
+          border-radius: 50%;
+        }
+      }
+      .info-right {
+        float: left;
+        height: 58px;
+        display: flex;
+        flex-flow: column;
+        justify-content: space-between;
+        .name {
+          font-size: 22px;
+          font-weight: 400;
+        }
+        .other {
+          .time {
+            margin-right: 15px;
+          }
+        }
+      }
+    }
+
+    .content {
+      margin-left: 34px;
+    }
+  }
+}
+</style>
