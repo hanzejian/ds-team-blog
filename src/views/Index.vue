@@ -21,9 +21,7 @@
             v-if="item.cover"
             class="art-img"
           >
-            <img
-              :src="item.cover"
-            >
+            <img data-role="image" :src="item.cover" class="image lake-drag-image" alt="image.png" title="image.png" style="visibility: visible;">
           </div>
         </li>
       </ul>
