@@ -74,6 +74,7 @@ export default {
 <style lang="scss" scoped>
 .article-detail {
   background-color: #F3F3F3;
+  padding-bottom: 20px;
 
   .center {
     width: 1311px;
@@ -83,7 +84,7 @@ export default {
   main {
     background-color: white;
     margin-top: 20px !important;
-    min-height: 800px;
+    min-height: 85vh;
 
     .author-info {
       padding: 31px 0 0 34px;

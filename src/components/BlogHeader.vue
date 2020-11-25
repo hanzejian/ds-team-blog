@@ -15,10 +15,17 @@
       </div>
       <el-input
         v-if="$route.path === '/index'"
+        :disabled="disabled"
         v-model="keyword"
         placeholder="搜索文章"
+        @keyup.enter.native="search"
       >
-        <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+        <el-button
+          :disabled="disabled"
+          slot="append"
+          icon="el-icon-search"
+          @click="search"
+        ></el-button>
       </el-input>
     </div>
   </header>
@@ -27,6 +34,12 @@
 <script>
 export default {
   name: 'BlogHeader',
+  props: {
+    disabled: {
+      type: Boolean,
+      default: true
+    }
+  },
   data: function() {
     return {
       keyword: ''
@@ -39,15 +52,26 @@ export default {
       }
     },
     search () {
+      if (!this.keyword.trim()) {
+        this.$message.error('搜索内容不能为空')
+        return
+      }
       let params = {
         keyword: this.keyword,
         pageNo: 1,
         pageSize: 5
       }
+      console.log(this.$parent.loadingTarget)
+      console.log(this.$parent)
+      this.$parent.loadingInstance = this.$loading({
+        target: this.$parent.loadingTarget,
+        text: '加载中...'
+      })
+      this.$parent.disabled = true
       this.axios.post("http://120.79.115.240:5000/articles/search", params).then((res) => {
         if (res.data.success) {
-
           this.$emit('handleArticleSearch', res.data.data)
+          this.$parent.disabled = false
         } else {
           this.$message.error('搜索文章失败')
         }
@@ -55,6 +79,8 @@ export default {
         if (err) {
           this.$message.error('服务器异常')
         }
+      }).finally(() => {
+        this.$parent.loadingInstance.close()
       })
     }
   }

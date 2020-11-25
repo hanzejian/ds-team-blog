@@ -1,7 +1,12 @@
 <template>
   <div class="index">
-    <blog-header @handleArticleSearch="handleArticleSearch"></blog-header>
-    <main class="center">
+    <blog-header
+      :disabled="disabled"
+      @handleArticleSearch="handleArticleSearch"
+    ></blog-header>
+    <main
+      id="loadingTarget"
+      class="center">
       <ul class="tabList">
         <li class="active">全部</li>
         <!-- <li>最新</li>
@@ -15,18 +20,19 @@
         <li
           v-for="item in articleList"
           :key="item.id"
-          @click="handleToDetail(item._id)"
         >
-          <div class="art-info">
-            <div class="tip">{{`${item.creator.name} · ${item.created_at}`}}</div>
-            <div class="title">{{ item.title }}</div>
-          </div>
-          <div
-            v-if="item.cover"
-            class="art-img"
-          >
-            <img data-role="image" :src="item.cover" class="image lake-drag-image" alt="image.png" title="image.png" style="visibility: visible;">
-          </div>
+          <a :href="`${articleUrl}${item._id}`" target="_blank">
+            <div class="art-info">
+              <div class="tip">{{`${item.creator.name} · ${item.created_at}`}}</div>
+              <div class="title">{{ item.title }}</div>
+            </div>
+            <div
+              v-if="item.cover"
+              class="art-img"
+            >
+              <img data-role="image" :src="item.cover" class="image lake-drag-image" alt="image.png" title="image.png" style="visibility: visible;">
+            </div>
+          </a>
         </li>
       </ul>
       <el-pagination
@@ -70,14 +76,12 @@ export default {
       keyWord: '',
       loadingInstance: null,
       loadingTarget: null,
-      disabled: true
+      disabled: true,
+      articleUrl: 'http://localhost:8080/articleDetail?id='
     }
   },
-  created () {
-    
-  },
   mounted () {
-    this.loadingTarget = document.getElementById('articleList')
+    this.loadingTarget = document.getElementById('loadingTarget')
     this.getArticle()
   },
   methods: {
@@ -110,14 +114,6 @@ export default {
       this.pageObj.pageNo = curPage
       this.getArticle()
     },
-    handleToDetail (id) {
-      this.$router.push({
-        path: '/articleDetail',
-        query: {
-          id: id
-        }
-      })
-    },
     handleArticleSearch (data) {
       this.articleList = data.list
       this.totalCount = data.totalCount
@@ -134,6 +130,7 @@ ul {
 }
 .index {
   background-color: #F3F3F3;
+  padding-bottom: 20px;
   .center {
     width: 1311px;
     margin: 0 auto;
@@ -179,6 +176,8 @@ ul {
     // height: 500px;
     background-color: white;
     margin-top: 20px !important;
+    padding-bottom: 20px;
+    min-height: 85vh;
 
     ul.tabList {
       padding-left: 32px;
@@ -198,15 +197,19 @@ ul {
     ul.articleList {
       box-sizing: border-box;
       width: 1311px;
-      min-height: 200px;
       li {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid #F6F6F6;
-        padding: 29px 54px 21px 33px;
-        text-align: left;
-        cursor: pointer;
+        a {
+          display: block;
+          text-decoration: none;
+          color: black;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-bottom: 1px solid #F6F6F6;
+          padding: 29px 54px 21px 33px;
+          text-align: left;
+          cursor: pointer;
+        }
         .art-info {
           height: 106px;
           .tip {
@@ -240,17 +243,18 @@ ul {
     .el-pagination {
       display: flex;
       justify-content: center;
-      margin-top: 30px;
+      margin-top: 20px;
     }
-  }
-  .no-result {
-    height: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 
-    i {
-      margin-right: 10px;
+    .no-result {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      i {
+        margin-right: 10px;
+      }
     }
   }
 }
