@@ -15,6 +15,7 @@
           </div>
         </div>
       </div>
+      <h1 style="{ textAlign: 'center' }">{{ article.title }}</h1>
       <div class="content" v-html="article.body_html"></div>
     </main>
   </div>
@@ -91,6 +92,7 @@ export default {
         .name {
           font-size: 22px;
           font-weight: 400;
+          text-align: left;
         }
         .other {
           .time {
@@ -102,6 +104,9 @@ export default {
 
     .content {
       margin-left: 34px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
     }
   }
 }

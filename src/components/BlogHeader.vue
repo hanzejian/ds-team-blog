@@ -12,9 +12,10 @@
       </div>
       <el-input
         v-if="$route.path === '/index'"
+        v-model="keyword"
         placeholder="搜索文章"
       >
-        <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
       </el-input>
     </div>
   </header>
@@ -25,6 +26,28 @@ export default {
   name: 'BlogHeader',
   data: function() {
     return {
+      keyword: ''
+    }
+  },
+  methods: {
+    search () {
+      let params = {
+        keyword: this.keyword,
+        pageNo: 1,
+        pageSize: 5
+      }
+      this.axios.post("http://120.79.115.240:5000/articles/search", params).then((res) => {
+        if (res.data.success) {
+
+          this.$emit('handleArticleSearch', res.data.data)
+        } else {
+          this.$message.error('搜索文章失败')
+        }
+      }).catch(err => {
+        if (err) {
+          this.$message.error('服务器异常')
+        }
+      })
     }
   }
 };

@@ -1,6 +1,6 @@
 <template>
   <div class="index">
-    <blog-header></blog-header>
+    <blog-header @handleArticleSearch="handleArticleSearch"></blog-header>
     <main class="center">
       <ul class="tabList">
         <li class="active">热门</li>
@@ -54,7 +54,8 @@ export default {
         pageNo: 1,
         pageSize: 5
       },
-      totalCount: 0
+      totalCount: 0,
+      keyWord: ''
     }
   },
   created () {
@@ -89,6 +90,10 @@ export default {
           id: id
         }
       })
+    },
+    handleArticleSearch (data) {
+      this.articleList = data.list
+      this.totalCount = data.totalCount
     }
   },
 };
