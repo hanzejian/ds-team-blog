@@ -3,11 +3,15 @@
     <blog-header @handleArticleSearch="handleArticleSearch"></blog-header>
     <main class="center">
       <ul class="tabList">
-        <li class="active">热门</li>
-        <li>最新</li>
-        <li>热榜</li>
+        <li class="active">全部</li>
+        <!-- <li>最新</li>
+        <li>热榜</li> -->
       </ul>
-      <ul class="articleList">
+      <ul
+        v-if="articleList.length !== 0"
+        id="articleList"
+        class="articleList"
+      >
         <li
           v-for="item in articleList"
           :key="item.id"
@@ -26,15 +30,23 @@
         </li>
       </ul>
       <el-pagination
+        v-if="!disabled && articleList.length !== 0"
         background
         layout="prev, pager, next"
         :total="totalCount"
         :page-size="pageObj.pageSize"
+        :current-page="pageObj.pageNo"
         @current-change="handleChange"
         @prev-click="handleChange"
         @next-click="handleChange"
       >
       </el-pagination>
+      <div
+        v-if="articleList.length === 0"
+        class="no-result">
+        <i class="el-icon-document"></i>
+        <span>暂无搜索结果~</span>
+      </div>
     </main>
   </div>
 </template>
@@ -55,14 +67,26 @@ export default {
         pageSize: 5
       },
       totalCount: 0,
-      keyWord: ''
+      keyWord: '',
+      loadingInstance: null,
+      loadingTarget: null,
+      disabled: true
     }
   },
   created () {
+    
+  },
+  mounted () {
+    this.loadingTarget = document.getElementById('articleList')
     this.getArticle()
   },
   methods: {
     getArticle () {
+      this.loadingInstance = this.$loading({
+        target: this.loadingTarget,
+        text: '加载中...'
+      })
+      this.disabled = true
       this.axios.post("http://120.79.115.240:5000/articles", this.pageObj).then((res) => {
         if (res.data.success) {
           this.articleList = res.data.data.list
@@ -70,6 +94,7 @@ export default {
           this.articleList.forEach(item => {
             item.created_at = moment(item.created_at).format('YYYY-MM-DD')
           })
+        this.disabled = false
         } else {
           this.$message.error('获取文章列表失败！')
         }
@@ -77,6 +102,8 @@ export default {
         if (err) {
           this.$message.error('服务器异常')
         }
+      }).finally(() => {
+        this.loadingInstance.close()
       })
     },
     handleChange (curPage) {
@@ -129,7 +156,7 @@ ul {
       ul {
         display: flex;
         align-items: center;
-        justify-content: space-between;        
+        justify-content: space-between;
         width: 300px;
         li {
           height: 89px;
@@ -171,6 +198,7 @@ ul {
     ul.articleList {
       box-sizing: border-box;
       width: 1311px;
+      min-height: 200px;
       li {
         display: flex;
         align-items: center;
@@ -213,6 +241,16 @@ ul {
       display: flex;
       justify-content: center;
       margin-top: 30px;
+    }
+  }
+  .no-result {
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    i {
+      margin-right: 10px;
     }
   }
 }

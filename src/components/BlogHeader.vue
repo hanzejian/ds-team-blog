@@ -4,10 +4,13 @@
       <div class="header-inner">
         <img src="../assets/images/indexlogo.png" alt="">
         <ul>
-          <li class="active">首页</li>
-          <li>热点</li>
+          <li
+            class="active"
+            @click="handleToIndex"
+          >首页</li>
+          <!-- <li>热点</li>
           <li>课程</li>
-          <li>待开发</li>
+          <li>待开发</li> -->
         </ul>
       </div>
       <el-input
@@ -30,6 +33,11 @@ export default {
     }
   },
   methods: {
+    handleToIndex () {
+      if (this.$route.path !== '/index') {
+        this.$router.push({path: 'index'})
+      }
+    },
     search () {
       let params = {
         keyword: this.keyword,
@@ -76,7 +84,7 @@ header {
     height: 100%;
     width: 500px;
     align-items: center;
-    justify-content: space-between;
+    // justify-content: space-between;
     margin-right: 300px;
     ul {
       display: flex;

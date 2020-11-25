@@ -1,7 +1,10 @@
 <template>
   <div class="article-detail">
     <blog-Header></blog-Header>
-    <main class="center">
+    <main
+      id="loadingTarget"
+      class="center"
+    >
       <div
         v-if="article.creator"
         class="author-info"
@@ -34,14 +37,21 @@ export default {
   },
   data: function() {
     return {
-      article: {}
+      article: {},
+      loadingInstance: null,
+      loadingTarget: null
     }
   },
-  created () {
+  mounted () {
+    this.loadingTarget = document.getElementById('loadingTarget')
     this.getDetail()
   },
   methods: {
     getDetail () {
+      this.loadingInstance = this.$loading({
+        target: this.loadingTarget,
+        text: '加载中...'
+      })
       this.axios.get("http://120.79.115.240:5000/articles/article?id=" + this.$route.query.id).then((res) => {
         if (res.data.success) {
           this.article = res.data.data
@@ -53,6 +63,8 @@ export default {
         if (err) {
           this.$message.error('服务器异常')
         }
+      }).finally(() => {
+        this.loadingInstance.close()
       })
     }
   },
@@ -71,6 +83,7 @@ export default {
   main {
     background-color: white;
     margin-top: 20px !important;
+    min-height: 800px;
 
     .author-info {
       padding: 31px 0 0 34px;
@@ -106,7 +119,7 @@ export default {
     }
 
     .content {
-      width: 100%;
+      // width: 100%;
       display: flex;
       justify-content: center;
     }

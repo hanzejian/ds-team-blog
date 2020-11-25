@@ -20,9 +20,9 @@ const common = {
         }       
         const url = window.location.href.split("?")[0];
         if(uuid){
-            new Image(1,1).src = "http://10.150.70.173:5000/flow/getFlow?url=" + url + "&uuid=" + uuid 
+            new Image(1,1).src = "http://120.79.115.240:5000/flow/getFlow?url=" + url + "&uuid=" + uuid 
         }else{
-            new Image(1,1).src = "http://10.150.70.173:5000/flow/getFlow?url=" + url
+            new Image(1,1).src = "http://120.79.115.240:5000/flow/getFlow?url=" + url
             common.setCookie("uuid",uuidv4(),1)
         }
 
