@@ -2,7 +2,10 @@
   <div class="article-detail">
     <blog-Header></blog-Header>
     <main class="center">
-      <div class="author-info">
+      <div
+        v-if="article.creator"
+        class="author-info"
+      >
         <div class="info-left"
         >
           <img :src="article.creator.avatar_url" alt="">
@@ -103,7 +106,6 @@ export default {
     }
 
     .content {
-      margin-left: 34px;
       width: 100%;
       display: flex;
       justify-content: center;
