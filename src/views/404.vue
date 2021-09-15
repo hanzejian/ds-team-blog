@@ -11,6 +11,7 @@
       >
     </div>
     <div v-if="false">来自dev的修改</div>
+    <div v-if="false">禁用合并时的fast-forward模式</div>
   </div>
 </template>
 
