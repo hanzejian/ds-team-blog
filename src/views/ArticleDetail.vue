@@ -1,17 +1,10 @@
 <template>
   <div class="article-detail">
     <blog-Header></blog-Header>
-    <main
-      id="loadingTarget"
-      class="center"
-    >
-      <div
-        v-if="article.creator"
-        class="author-info"
-      >
-        <div class="info-left"
-        >
-          <img :src="article.creator.avatar_url" alt="">
+    <main id="loadingTarget" class="center">
+      <div v-if="article.creator" class="author-info">
+        <div class="info-left">
+          <img :src="article.creator.avatar_url" alt="" />
         </div>
         <div class="info-right">
           <div class="name">{{ article.creator.name }}</div>
@@ -21,59 +14,76 @@
           </div>
         </div>
       </div>
-      <h1 style="{ textAlign: 'center' }">{{ article.title }}</h1>
-      <div class="content" v-html="article.body_html"></div>
+      <h1
+        style="
+           {
+            textalign: 'center';
+          }
+        "
+      >
+        {{ article.title }}
+      </h1>
+      <div class="content1" v-html="article.body_html"></div>
     </main>
   </div>
 </template>
 
 <script>
-import BlogHeader from '../components/BlogHeader'
-import moment from 'moment'
+import BlogHeader from "../components/BlogHeader";
+import moment from "moment";
 export default {
-  name: 'ArticleDetail',
+  name: "ArticleDetail",
   components: {
-    BlogHeader
+    BlogHeader,
   },
-  data: function() {
+  data: function () {
     return {
       article: {},
       loadingInstance: null,
-      loadingTarget: null
-    }
+      loadingTarget: null,
+    };
   },
-  mounted () {
-    this.loadingTarget = document.getElementById('loadingTarget')
-    this.getDetail()
+  mounted() {
+    this.loadingTarget = document.getElementById("loadingTarget");
+    this.getDetail();
   },
   methods: {
-    getDetail () {
+    getDetail() {
       this.loadingInstance = this.$loading({
         target: this.loadingTarget,
-        text: '加载中...'
-      })
-      this.axios.get("http://120.79.115.240:5000/articles/article?id=" + this.$route.query.id).then((res) => {
-        if (res.data.success) {
-          this.article = res.data.data
-          this.article.created_at = moment(this.article.created_at).format('YYYY年MM月DD日')
-        } else {
-          this.$message.error('获取文章列表失败！')
-        }
-      }).catch(err => {
-        if (err) {
-          this.$message.error('服务器异常')
-        }
-      }).finally(() => {
-        this.loadingInstance.close()
-      })
-    }
+        text: "加载中...",
+      });
+      this.axios
+        .get(
+          "http://120.79.115.240:5000/articles/article?id=" +
+            this.$route.query.id
+        )
+        .then((res) => {
+          if (res.data.success) {
+            this.article = res.data.data;
+            this.article.created_at = moment(this.article.created_at).format(
+              "YYYY年MM月DD日"
+            );
+          } else {
+            this.$message.error("获取文章列表失败！");
+          }
+        })
+        .catch((err) => {
+          if (err) {
+            this.$message.error("服务器异常");
+          }
+        })
+        .finally(() => {
+          this.loadingInstance.close();
+        });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .article-detail {
-  background-color: #F3F3F3;
+  background-color: #f3f3f3;
   padding-bottom: 20px;
 
   .center {

@@ -4,33 +4,30 @@
       :disabled="disabled"
       @handleArticleSearch="handleArticleSearch"
     ></blog-header>
-    <main
-      id="loadingTarget"
-      class="center">
+    <main id="loadingTarget1" class="center">
       <ul class="tabList">
         <li class="active">全部</li>
         <!-- <li>最新</li>
         <li>热榜</li> -->
       </ul>
-      <ul
-        v-if="articleList.length !== 0"
-        id="articleList"
-        class="articleList"
-      >
-        <li
-          v-for="item in articleList"
-          :key="item.id"
-        >
+      <ul v-if="articleList.length !== 0" id="articleList" class="articleList">
+        <li v-for="item in articleList" :key="item.id">
           <a :href="`${articleUrl}${item._id}`" target="_blank">
             <div class="art-info">
-              <div class="tip">{{`${item.creator.name} · ${item.created_at}`}}</div>
+              <div class="tip">
+                {{ `${item.creator.name} · ${item.created_at}` }}
+              </div>
               <div class="title">{{ item.title }}</div>
             </div>
-            <div
-              v-if="item.cover"
-              class="art-img"
-            >
-              <img data-role="image" :src="item.cover" class="image lake-drag-image" alt="image.png" title="image.png" style="visibility: visible;">
+            <div v-if="item.cover" class="art-img">
+              <img
+                data-role="image"
+                :src="item.cover"
+                class="image lake-drag-image"
+                alt="image.png"
+                title="image.png"
+                style="visibility: visible"
+              />
             </div>
           </a>
         </li>
@@ -47,9 +44,7 @@
         @next-click="handleChange"
       >
       </el-pagination>
-      <div
-        v-if="articleList.length === 0"
-        class="no-result">
+      <div v-if="articleList.length === 0" class="no-result">
         <i class="el-icon-document"></i>
         <span>暂无搜索结果~</span>
       </div>
@@ -58,66 +53,70 @@
 </template>
 
 <script>
-import BlogHeader from '../components/BlogHeader'
-import moment from 'moment'
+import BlogHeader from "../components/BlogHeader";
+import moment from "moment";
 export default {
-  name: 'Index',
+  name: "Index",
   components: {
-    BlogHeader
+    BlogHeader,
   },
-  data: function() {
+  data: function () {
     return {
       articleList: [],
       pageObj: {
         pageNo: 1,
-        pageSize: 5
+        pageSize: 5,
       },
       totalCount: 0,
-      keyWord: '',
+      keyWord: "",
       loadingInstance: null,
       loadingTarget: null,
       disabled: true,
-      articleUrl: 'http://localhost:8080/articleDetail?id='
-    }
+      articleUrl: "http://localhost:8080/articleDetail?id=",
+    };
   },
-  mounted () {
-    this.loadingTarget = document.getElementById('loadingTarget')
-    this.getArticle()
+  mounted() {
+    this.loadingTarget = document.getElementById("loadingTarget");
+    this.getArticle();
   },
   methods: {
-    getArticle () {
+    getArticle() {
       this.loadingInstance = this.$loading({
         target: this.loadingTarget,
-        text: '加载中...'
-      })
-      this.disabled = true
-      this.axios.post("http://120.79.115.240:5000/articles", this.pageObj).then((res) => {
-        if (res.data.success) {
-          this.articleList = res.data.data.list
-          this.totalCount = res.data.data.totalCount
-          this.articleList.forEach(item => {
-            item.created_at = moment(item.created_at).format('YYYY-MM-DD')
-          })
-        this.disabled = false
-        } else {
-          this.$message.error('获取文章列表失败！')
-        }
-      }).catch(err => {
-        if (err) {
-          this.$message.error('服务器异常')
-        }
-      }).finally(() => {
-        this.loadingInstance.close()
-      })
+        text: "加载中...",
+      });
+      this.disabled = true;
+      this.axios
+        .post("http://120.79.115.240:5000/articles", this.pageObj)
+        .then((res) => {
+          if (res.data.success) {
+            this.articleList = res.data.data.list;
+            this.totalCount = res.data.data.totalCount;
+            this.articleList.forEach((item) => {
+              item.created_at = moment(item.created_at).format("YYYY-MM-DD");
+            });
+            this.disabled = false;
+          } else {
+            this.$message.error("获取文章列表失败！");
+          }
+        })
+        .catch((err) => {
+          if (err) {
+            this.$message.error("服务器异常");
+          }
+        })
+        .finally(() => {
+          this.loadingInstance.close();
+        });
     },
-    handleChange (curPage) {
-      this.pageObj.pageNo = curPage
-      this.getArticle()
+    handleChange(curPage) {
+      this.pageObj.pageNo = curPage;
+      this.getArticle();
     },
-    handleArticleSearch (data) {
-      this.articleList = data.list
-      this.totalCount = data.totalCount
-    }
+    handleArticleSearch(data) {
+      this.articleList = data.list;
+      this.totalCount = data.totalCount;
+    },
   },
 };
 </script>
@@ -129,14 +128,14 @@ ul {
   margin: 0;
 }
 .index {
-  background-color: #F3F3F3;
+  background-color: #f3f3f3;
   padding-bottom: 20px;
   .center {
     width: 1311px;
     margin: 0 auto;
   }
   .active {
-    color: #2B7DE1 !important;
+    color: #2b7de1 !important;
   }
   header {
     height: 87px;
@@ -161,7 +160,7 @@ ul {
           cursor: pointer;
           text-align: center;
           line-height: 89px;
-          color: #C1C1C1;
+          color: #c1c1c1;
           font-size: 20px;
         }
       }
@@ -188,7 +187,7 @@ ul {
         height: 62px;
         line-height: 62px;
         margin-right: 45px;
-        color: #C1C1C1;
+        color: #c1c1c1;
         cursor: pointer;
         font-size: 18px;
       }
@@ -205,7 +204,7 @@ ul {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          border-bottom: 1px solid #F6F6F6;
+          border-bottom: 1px solid #f6f6f6;
           padding: 29px 54px 21px 33px;
           text-align: left;
           cursor: pointer;
@@ -214,7 +213,7 @@ ul {
           height: 106px;
           .tip {
             font-size: 18px;
-            color: #D4D4D4;
+            color: #d4d4d4;
             max-width: 1100px;
             text-overflow: ellipsis;
             overflow: hidden;
