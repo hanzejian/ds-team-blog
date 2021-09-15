@@ -10,7 +10,7 @@
         >返回上一页</el-button
       >
     </div>
-    <div>master添加</div>
+    <div>merge添加</div>
   </div>
 </template>
 
