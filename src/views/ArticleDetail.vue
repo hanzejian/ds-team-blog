@@ -23,7 +23,7 @@
       >
         {{ article.title }}
       </h1>
-      <div class="content1" v-html="article.body_html"></div>
+      <div class="content134" v-html="article.body_html"></div>
     </main>
   </div>
 </template>
